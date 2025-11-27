@@ -26,10 +26,14 @@ app.post("/bewerten", async (req, res) => {
     );
 
     res.json(response.data.output[0].content[0].text);
-  } catch {
-    res.status(500).json({ error: "API Fehler" });
-  }
-});
+} catch (err) {
+  console.error(err.response?.data || err.message);
+
+  return res.status(500).json({
+    error: err?.response?.data?.error?.message || err.message || "Unbekannter Fehler"
+  });
+}
+
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log("Server läuft auf Port " + PORT));
