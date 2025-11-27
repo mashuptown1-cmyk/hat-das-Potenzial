@@ -99,22 +99,129 @@
       border-radius: 14px;
       background: rgba(255, 255, 255, 0.08);
       box-shadow: inset 0 0 25px rgba(0,0,0,0.5);
-      white-space: pre-wrap;
       font-size: 16px;
       color: #dff7ff;
-      animation: fadeIn 0.4s ease-out;
+      min-height: 40px;
     }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* --- Score / Graph Styles --- */
+
+    .score-box {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .total-score {
+      background: radial-gradient(circle at top left, #68d6ff22, #00000055);
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(104, 214, 255, 0.4);
+    }
+
+    .total-score-label {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #a9dfff;
+      margin-bottom: 4px;
+    }
+
+    .total-score-value {
+      font-size: 32px;
+      font-weight: 800;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .total-score-value span.small {
+      font-size: 16px;
+      font-weight: 400;
+      color: #c4e9ff;
+    }
+
+    .bar {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #68d6ff, #9f6afd);
+      box-shadow: 0 0 14px rgba(159, 106, 253, 0.8);
+      transition: width 0.8s ease-out;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 20px;
+    }
+
+    .metric {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px;
+    }
+
+    .metric-label {
+      color: #b9cbe0;
+      margin-bottom: 4px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .summary-title {
+      font-weight: 600;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      font-size: 15px;
+      color: #cde7ff;
+    }
+
+    .summary-text {
+      font-size: 14px;
+      color: #e5f5ff;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 24px 18px;
+      }
+      h1 {
+        font-size: 32px;
+      }
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🚀 Geschäftsidee bewerten</h1>
-    <p>Schreib deine Idee rein – der Algorithmus erledigt den Rest.</p>
+    <p>Schreib deine Idee rein – die KI checkt Markt, Risiko & Potenzial.</p>
 
     <textarea id="idee" placeholder="Deine Geschäftsidee hier eingeben..."></textarea>
     <button onclick="bewerten()">Bewerten</button>
@@ -122,49 +229,117 @@
     <div id="result"></div>
   </div>
 
-<script>
-async function bewerten() {
-  const text = document.getElementById("idee").value;
-  const resultBox = document.getElementById("result");
-
-  if (!text.trim()) {
-    resultBox.textContent = "Bitte zuerst eine Idee eingeben.";
-    return;
+  <script>
+  function animateBars() {
+    const bars = document.querySelectorAll(".bar-fill");
+    bars.forEach(bar => {
+      const target = bar.getAttribute("data-target");
+      bar.style.width = target + "%";
+    });
   }
 
-  resultBox.textContent = "⏳ Bewertung läuft…";
+  async function bewerten() {
+    const text = document.getElementById("idee").value;
+    const resultBox = document.getElementById("result");
 
-  try {
-    const res = await fetch("https://hat-das-potenzial.onrender.com/bewerten", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: text })
-    });
-
-    const data = await res.json();
-
-    if (data.result) {
-      // schöne Anzeige des Ergebnisses
-      resultBox.textContent = data.result;
-    } else if (data.error) {
-      resultBox.textContent = "❌ Fehler vom Server: " + data.error;
-    } else {
-      resultBox.textContent = JSON.stringify(data, null, 2);
+    if (!text.trim()) {
+      resultBox.textContent = "Bitte zuerst eine Idee eingeben.";
+      return;
     }
 
-  } catch (e) {
-    console.error(e);
-    resultBox.textContent = "❌ Fehler: Backend nicht erreichbar.";
+    resultBox.textContent = "⏳ Bewertung läuft…";
+
+    try {
+      const res = await fetch("https://hat-das-potenzial.onrender.com/bewerten", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: text })
+      });
+
+      const data = await res.json();
+
+      if (data.result) {
+        const r = data.result;
+
+        const totalPercent = Math.max(0, Math.min(100, (r.totalScore / 10) * 100));
+        const marketPercent = Math.max(0, Math.min(100, (r.market / 10) * 100));
+        const competitionPercent = Math.max(0, Math.min(100, (r.competition / 10) * 100));
+        const scalabilityPercent = Math.max(0, Math.min(100, (r.scalability / 10) * 100));
+        const riskPercent = Math.max(0, Math.min(100, (r.risk / 10) * 100));
+        const capitalPercent = Math.max(0, Math.min(100, (r.capital / 10) * 100));
+
+        resultBox.innerHTML = `
+          <div class="score-box">
+            <div class="total-score">
+              <div class="total-score-label">Gesamt-Potenzial</div>
+              <div class="total-score-value">
+                ${r.totalScore.toFixed ? r.totalScore.toFixed(1) : r.totalScore}
+                <span class="small">/ 10</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" data-target="${totalPercent}"></div>
+              </div>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metric">
+                <div class="metric-label">Marktgröße</div>
+                <div class="metric-value">${r.market}/10</div>
+                <div class="bar" style="margin-top:6px;">
+                  <div class="bar-fill" data-target="${marketPercent}"></div>
+                </div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Konkurrenz</div>
+                <div class="metric-value">${r.competition}/10</div>
+                <div class="bar" style="margin-top:6px;">
+                  <div class="bar-fill" data-target="${competitionPercent}"></div>
+                </div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Skalierbarkeit</div>
+                <div class="metric-value">${r.scalability}/10</div>
+                <div class="bar" style="margin-top:6px;">
+                  <div class="bar-fill" data-target="${scalabilityPercent}"></div>
+                </div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Risiko</div>
+                <div class="metric-value">${r.risk}/10</div>
+                <div class="bar" style="margin-top:6px;">
+                  <div class="bar-fill" data-target="${riskPercent}"></div>
+                </div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Kapitalbedarf</div>
+                <div class="metric-value">${r.capital}/10</div>
+                <div class="bar" style="margin-top:6px;">
+                  <div class="bar-fill" data-target="${capitalPercent}"></div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="summary-title">Fazit</div>
+              <div class="summary-text">${r.summary}</div>
+            </div>
+          </div>
+        `;
+
+        // Balken animiert „ansteigen“ lassen
+        setTimeout(animateBars, 50);
+
+      } else if (data.error) {
+        resultBox.textContent = "❌ Fehler vom Server: " + data.error;
+      } else {
+        resultBox.textContent = JSON.stringify(data, null, 2);
+      }
+
+    } catch (e) {
+      console.error(e);
+      resultBox.textContent = "❌ Fehler: Backend nicht erreichbar.";
+    }
   }
-}
-</script>
-
-
-
+  </script>
 </body>
 </html>
-
-
-
-
-
