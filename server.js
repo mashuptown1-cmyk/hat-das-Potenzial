@@ -16,27 +16,28 @@ app.post("/bewerten", async (req, res) => {
       "https://api.openai.com/v1/responses",
       {
         model: "gpt-4.1-mini",
-        input: `
-Du bist ein Analysesystem für Geschäftsideen.
-Bewerte die folgende Idee mit Zahlen von 1 bis 10 und einem kurzen Fazit.
+input: `
+Antworte *nur* mit gültigem JSON. Kein Kommentar, keine Erklärung, kein Text davor oder danach.
 
-Gib deine Antwort IMMER als gültiges JSON im folgenden Format zurück:
+Erzeuge ein JSON in *exakt* diesem Format:
 
 {
-  "market": Zahl von 1 bis 10,
-  "competition": Zahl von 1 bis 10,
-  "scalability": Zahl von 1 bis 10,
-  "risk": Zahl von 1 bis 10,
-  "capital": Zahl von 1 bis 10,
-  "totalScore": Zahl von 1 bis 10,
-  "summary": "kurzer deutscher Text als Fazit"
+  "market": 0,
+  "competition": 0,
+  "scalability": 0,
+  "risk": 0,
+  "capital": 0,
+  "totalScore": 0,
+  "summary": "Text"
 }
 
-Antwort NUR mit JSON, ohne Erklärung, ohne weiteren Text.
+Alle Werte 0–10 (ganze Zahlen).
+"summary" nur 1–3 Sätze, deutsch.
 
 Geschäftsidee:
 ${idee}
-        `
+`
+
       },
       {
         headers: {
