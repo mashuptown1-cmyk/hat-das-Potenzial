@@ -122,30 +122,32 @@
     <div id="result"></div>
   </div>
 
-  <script>
-    async function bewerten() {
-      const text = document.getElementById("idee").value;
-      const resultBox = document.getElementById("result");
+ <script>
+async function bewerten() {
+  const text = document.getElementById("idee").value;
+  const resultBox = document.getElementById("result");
 
-      resultBox.textContent = "⏳ Bewertung läuft…";
+  // Ladeanzeige
+  resultBox.textContent = "⏳ Bewertung läuft…";
 
-      try {
-        const res = await fetch("const res = await fetch("https://hat-das-potenzial.onrender.com/bewerten", {
-", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text })
-        });
+  try {
+    const res = await fetch("https://hat-das-potenzial.onrender.com/bewerten", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: text })
+    });
 
-        const data = await res.json();
-        resultBox.textContent = data;
+    const data = await res.json();
+    resultBox.textContent = data;
+  } catch (e) {
+    console.error(e);
+    resultBox.textContent = "❌ Fehler: Backend nicht erreichbar.";
+  }
+}
+</script>
 
-      } catch {
-        resultBox.textContent = "❌ Fehler: Backend nicht erreichbar.";
-      }
-    }
-  </script>
 </body>
 </html>
+
 
 
