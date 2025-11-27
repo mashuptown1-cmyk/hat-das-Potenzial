@@ -229,12 +229,21 @@
     <div id="result"></div>
   </div>
 
-  <script>
+<script>
   function animateBars() {
     const bars = document.querySelectorAll(".bar-fill");
     bars.forEach(bar => {
       const target = bar.getAttribute("data-target");
       bar.style.width = target + "%";
+    });
+  }
+
+  function attachMetricToggle() {
+    const metrics = document.querySelectorAll(".metric");
+    metrics.forEach(metric => {
+      metric.addEventListener("click", () => {
+        metric.classList.toggle("open");
+      });
     });
   }
 
@@ -261,11 +270,12 @@
       if (data.result) {
         const r = data.result;
 
-        const totalPercent = Math.max(0, Math.min(100, (r.totalScore / 10) * 100));
+        const totalMax = 40; // neue Gesamtskala: 4 Kriterien à 10 Punkte
+        const totalPercent = Math.max(0, Math.min(100, (r.totalScore / totalMax) * 100));
+
         const marketPercent = Math.max(0, Math.min(100, (r.market / 10) * 100));
         const competitionPercent = Math.max(0, Math.min(100, (r.competition / 10) * 100));
         const scalabilityPercent = Math.max(0, Math.min(100, (r.scalability / 10) * 100));
-        const riskPercent = Math.max(0, Math.min(100, (r.risk / 10) * 100));
         const capitalPercent = Math.max(0, Math.min(100, (r.capital / 10) * 100));
 
         resultBox.innerHTML = `
@@ -273,8 +283,8 @@
             <div class="total-score">
               <div class="total-score-label">Gesamt-Potenzial</div>
               <div class="total-score-value">
-                ${r.totalScore.toFixed ? r.totalScore.toFixed(1) : r.totalScore}
-                <span class="small">/ 10</span>
+                ${r.totalScore}
+                <span class="small">/ ${totalMax}</span>
               </div>
               <div class="bar">
                 <div class="bar-fill" data-target="${totalPercent}"></div>
@@ -288,33 +298,41 @@
                 <div class="bar" style="margin-top:6px;">
                   <div class="bar-fill" data-target="${marketPercent}"></div>
                 </div>
+                <div class="metric-reason">
+                  ${r.marketReason || "Begründung nicht verfügbar."}
+                </div>
               </div>
+
               <div class="metric">
                 <div class="metric-label">Konkurrenz</div>
                 <div class="metric-value">${r.competition}/10</div>
                 <div class="bar" style="margin-top:6px;">
                   <div class="bar-fill" data-target="${competitionPercent}"></div>
                 </div>
+                <div class="metric-reason">
+                  ${r.competitionReason || "Begründung nicht verfügbar."}
+                </div>
               </div>
+
               <div class="metric">
                 <div class="metric-label">Skalierbarkeit</div>
                 <div class="metric-value">${r.scalability}/10</div>
                 <div class="bar" style="margin-top:6px;">
                   <div class="bar-fill" data-target="${scalabilityPercent}"></div>
                 </div>
-              </div>
-              <div class="metric">
-                <div class="metric-label">Risiko</div>
-                <div class="metric-value">${r.risk}/10</div>
-                <div class="bar" style="margin-top:6px;">
-                  <div class="bar-fill" data-target="${riskPercent}"></div>
+                <div class="metric-reason">
+                  ${r.scalabilityReason || "Begründung nicht verfügbar."}
                 </div>
               </div>
+
               <div class="metric">
                 <div class="metric-label">Kapitalbedarf</div>
                 <div class="metric-value">${r.capital}/10</div>
                 <div class="bar" style="margin-top:6px;">
                   <div class="bar-fill" data-target="${capitalPercent}"></div>
+                </div>
+                <div class="metric-reason">
+                  ${r.capitalReason || "Begründung nicht verfügbar."}
                 </div>
               </div>
             </div>
@@ -326,8 +344,10 @@
           </div>
         `;
 
-        // Balken animiert „ansteigen“ lassen
+        // Balken animiert ansteigen lassen
         setTimeout(animateBars, 50);
+        // Klick zum Aufklappen der Begründungen aktivieren
+        attachMetricToggle();
 
       } else if (data.error) {
         resultBox.textContent = "❌ Fehler vom Server: " + data.error;
@@ -340,6 +360,8 @@
       resultBox.textContent = "❌ Fehler: Backend nicht erreichbar.";
     }
   }
-  </script>
+</script>
+
 </body>
 </html>
+
