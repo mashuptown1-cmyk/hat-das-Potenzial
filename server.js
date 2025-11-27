@@ -31,4 +31,6 @@ app.post("/bewerten", async (req, res) => {
   }
 });
 
-app.listen(10000, () => console.log("Server läuft"));
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log("Server läuft auf Port " + PORT));
+
