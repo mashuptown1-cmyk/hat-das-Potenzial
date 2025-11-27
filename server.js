@@ -16,7 +16,14 @@ app.post("/bewerten", async (req, res) => {
       "https://api.openai.com/v1/responses",
       {
         model: "gpt-4.1-mini",
-        input: `Bewerte diese Geschäftsidee: ${idee}`
+        input: `Bewerte diese Geschäftsidee:\n\n${idee}\n\n
+        Gib bitte eine kurze, strukturierte Auswertung mit:
+        - Marktgröße (1–10)
+        - Konkurrenz (1–10)
+        - Skalierbarkeit (1–10)
+        - Risiko (1–10)
+        - Kapitalbedarf (1–10)
+        - Gesamtfazit in 3–5 Sätzen.`
       },
       {
         headers: {
@@ -25,16 +32,18 @@ app.post("/bewerten", async (req, res) => {
       }
     );
 
-    res.json(response.data.output[0].content[0].text);
-} catch (err) {
-  console.error(err.response?.data || err.message);
+    const text = response.data.output[0].content[0].text;
+    // Wir schicken IMMER ein Objekt mit "result"
+    return res.json({ result: text });
 
-  return res.status(500).json({
-    error: err?.response?.data?.error?.message || err.message || "Unbekannter Fehler"
-  });
-}
+  } catch (err) {
+    console.error(err.response?.data || err.message);
 
+    return res.status(500).json({
+      error: err?.response?.data?.error?.message || err.message || "Unbekannter Fehler"
+    });
+  }
+});
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log("Server läuft auf Port " + PORT));
-
