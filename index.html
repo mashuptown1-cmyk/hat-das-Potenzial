@@ -122,12 +122,11 @@
     <div id="result"></div>
   </div>
 
- <script>
+<script>
 async function bewerten() {
   const text = document.getElementById("idee").value;
   const resultBox = document.getElementById("result");
 
-  // Ladeanzeige
   resultBox.textContent = "⏳ Bewertung läuft…";
 
   try {
@@ -138,7 +137,19 @@ async function bewerten() {
     });
 
     const data = await res.json();
-    resultBox.textContent = data;
+
+    // Wenn ein fertiger Text kommt (String)
+    if (typeof data === "string") {
+      resultBox.textContent = data;
+    }
+    // Wenn ein Fehler oder Objekt kommt
+    else if (data.error) {
+      resultBox.textContent = "❌ Fehler vom Server: " + data.error;
+    } else {
+      // Alles andere schön formatiert anzeigen
+      resultBox.textContent = JSON.stringify(data, null, 2);
+    }
+
   } catch (e) {
     console.error(e);
     resultBox.textContent = "❌ Fehler: Backend nicht erreichbar.";
@@ -146,8 +157,10 @@ async function bewerten() {
 }
 </script>
 
+
 </body>
 </html>
+
 
 
 
