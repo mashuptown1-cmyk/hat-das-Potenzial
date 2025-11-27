@@ -130,7 +130,8 @@
       resultBox.textContent = "⏳ Bewertung läuft…";
 
       try {
-        const res = await fetch("https://hat-das-potenzial.onrender.com/", {
+        const res = await fetch("const res = await fetch("https://hat-das-potenzial.onrender.com/bewerten", {
+", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text })
@@ -146,4 +147,5 @@
   </script>
 </body>
 </html>
+
 
