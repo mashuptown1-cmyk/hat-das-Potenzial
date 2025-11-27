@@ -16,7 +16,7 @@ app.post("/bewerten", async (req, res) => {
       "https://api.openai.com/v1/responses",
       {
         model: "gpt-4.1-mini",
-input: `
+        input: `
 Antworte *nur* mit gültigem JSON. Kein Kommentar, keine Erklärung, kein Text davor oder danach.
 
 Erzeuge ein JSON in *exakt* diesem Format:
@@ -37,7 +37,6 @@ Alle Werte 0–10 (ganze Zahlen).
 Geschäftsidee:
 ${idee}
 `
-
       },
       {
         headers: {
@@ -46,16 +45,37 @@ ${idee}
       }
     );
 
-    const raw = response.data.output[0].content[0].text?.trim();
-    let parsed;
+    let raw = response.data.output[0].content[0].text || "";
+    raw = raw.trim();
 
-    try {
-      parsed = JSON.parse(raw);
-    } catch (e) {
-      console.error("Konnte JSON nicht parsen:", raw);
+    // 1. ```json und ``` entfernen
+    let cleaned = raw
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
+
+    // 2. Nur den Teil zwischen erstem { und letztem } nehmen
+    const firstBrace = cleaned.indexOf("{");
+    const lastBrace = cleaned.lastIndexOf("}");
+
+    if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
+      console.error("Kein gültiger JSON-Block gefunden:", cleaned);
       return res.status(500).json({
-        error: "Antwort der KI war kein gültiges JSON.",
-        raw: raw
+        error: "Antwort der KI war kein gültiges JSON (kein JSON-Block gefunden).",
+        raw: cleaned
+      });
+    }
+
+    const jsonString = cleaned.slice(firstBrace, lastBrace + 1);
+
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonString);
+    } catch (e) {
+      console.error("Konnte JSON nicht parsen:", jsonString);
+      return res.status(500).json({
+        error: "Antwort der KI war kein gültiges JSON (Parse-Fehler).",
+        raw: jsonString
       });
     }
 
