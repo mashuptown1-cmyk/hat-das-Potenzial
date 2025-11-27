@@ -17,26 +17,33 @@ app.post("/bewerten", async (req, res) => {
       {
         model: "gpt-4.1-mini",
         input: `
-Antworte *nur* mit gültigem JSON. Kein Kommentar, keine Erklärung, kein Text davor oder danach.
+Antworte nur mit gültigem JSON. Kein Kommentar, keine Erklärung, kein Text davor oder danach.
 
-Erzeuge ein JSON in *exakt* diesem Format:
+Erzeuge ein JSON in exakt diesem Format:
 
 {
   "market": 0,
+  "marketReason": "Text",
   "competition": 0,
+  "competitionReason": "Text",
   "scalability": 0,
-  "risk": 0,
+  "scalabilityReason": "Text",
   "capital": 0,
+  "capitalReason": "Text",
   "totalScore": 0,
   "summary": "Text"
 }
 
-Alle Werte 0–10 (ganze Zahlen).
-"summary" nur 1–3 Sätze, deutsch.
+Bedeutung:
+- Alle Zahlen sind ganze Zahlen zwischen 0 und 10.
+- "totalScore" ist die Summe von market + competition + scalability + capital (also 0–40).
+- "summary" ist ein kurzes Fazit (1–3 Sätze, auf Deutsch).
+- In den *Reason*-Feldern kurz und knackig erklären, warum du den Wert vergeben hast (Deutsch).
+- Risiko soll nur in den Begründungen / im summary berücksichtigt werden, aber **keinen eigenen Zahlenwert bekommen**.
 
 Geschäftsidee:
 ${idee}
-`
+        `
       },
       {
         headers: {
@@ -48,13 +55,13 @@ ${idee}
     let raw = response.data.output[0].content[0].text || "";
     raw = raw.trim();
 
-    // 1. ```json und ``` entfernen
+    // ```json und ``` entfernen
     let cleaned = raw
       .replace(/```json/gi, "")
       .replace(/```/g, "")
       .trim();
 
-    // 2. Nur den Teil zwischen erstem { und letztem } nehmen
+    // Nur den Teil zwischen erstem { und letztem } nehmen
     const firstBrace = cleaned.indexOf("{");
     const lastBrace = cleaned.lastIndexOf("}");
 
