@@ -16,14 +16,27 @@ app.post("/bewerten", async (req, res) => {
       "https://api.openai.com/v1/responses",
       {
         model: "gpt-4.1-mini",
-        input: `Bewerte diese Geschäftsidee:\n\n${idee}\n\n
-        Gib bitte eine kurze, strukturierte Auswertung mit:
-        - Marktgröße (1–10)
-        - Konkurrenz (1–10)
-        - Skalierbarkeit (1–10)
-        - Risiko (1–10)
-        - Kapitalbedarf (1–10)
-        - Gesamtfazit in 3–5 Sätzen.`
+        input: `
+Du bist ein Analysesystem für Geschäftsideen.
+Bewerte die folgende Idee mit Zahlen von 1 bis 10 und einem kurzen Fazit.
+
+Gib deine Antwort IMMER als gültiges JSON im folgenden Format zurück:
+
+{
+  "market": Zahl von 1 bis 10,
+  "competition": Zahl von 1 bis 10,
+  "scalability": Zahl von 1 bis 10,
+  "risk": Zahl von 1 bis 10,
+  "capital": Zahl von 1 bis 10,
+  "totalScore": Zahl von 1 bis 10,
+  "summary": "kurzer deutscher Text als Fazit"
+}
+
+Antwort NUR mit JSON, ohne Erklärung, ohne weiteren Text.
+
+Geschäftsidee:
+${idee}
+        `
       },
       {
         headers: {
@@ -32,15 +45,29 @@ app.post("/bewerten", async (req, res) => {
       }
     );
 
-    const text = response.data.output[0].content[0].text;
-    // Wir schicken IMMER ein Objekt mit "result"
-    return res.json({ result: text });
+    const raw = response.data.output[0].content[0].text?.trim();
+    let parsed;
+
+    try {
+      parsed = JSON.parse(raw);
+    } catch (e) {
+      console.error("Konnte JSON nicht parsen:", raw);
+      return res.status(500).json({
+        error: "Antwort der KI war kein gültiges JSON.",
+        raw: raw
+      });
+    }
+
+    return res.json({ result: parsed });
 
   } catch (err) {
     console.error(err.response?.data || err.message);
 
     return res.status(500).json({
-      error: err?.response?.data?.error?.message || err.message || "Unbekannter Fehler"
+      error:
+        err?.response?.data?.error?.message ||
+        err.message ||
+        "Unbekannter Fehler"
     });
   }
 });
