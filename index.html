@@ -4,14 +4,11 @@
   <meta charset="UTF-8" />
   <title>Hat das Potenzial? – Geschäftsideen & Anmachsprüche per KI bewerten</title>
 
-  <!-- Wichtig für Mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- SEO: Beschreibung & Keywords -->
   <meta name="description" content="Kostenlos Geschäftsidee oder Anmachspruch von KI bewerten lassen. ‚Hat das Potenzial?‘ analysiert Marktchancen, Skalierbarkeit, Humor, Originalität und Erfolgschance in wenigen Sekunden.">
   <meta name="keywords" content="Geschäftsidee bewerten, Startup Idee prüfen, KI Bewertung, Geschäftsidee Analyse, Anmachspruch bewerten, Pick-up Line testen, KI Tool, Potenzial Analyse">
 
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
   <style>
@@ -27,8 +24,8 @@
       color: #ffffff;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;         /* ⚡ Container + Footer untereinander */
-      align-items: center;            /* zentriert */
+      flex-direction: column;
+      align-items: center;
       padding: 40px 15px 20px;
     }
 
@@ -42,7 +39,7 @@
       backdrop-filter: blur(18px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       animation: fadeIn 0.9s ease-out;
-      margin-bottom: 16px;           /* Abstand zum Footer */
+      margin-bottom: 16px;
     }
 
     h1 {
@@ -278,6 +275,38 @@
       line-height: 1.5;
     }
 
+    .next-steps-btn {
+      margin-top: 16px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 12px;
+      border: 1px solid rgba(104, 214, 255, 0.7);
+      background: transparent;
+      color: #cde7ff;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .next-steps-btn:hover {
+      background: rgba(104, 214, 255, 0.12);
+      transform: scale(1.01);
+      box-shadow: 0 0 12px rgba(104, 214, 255, 0.4);
+    }
+
+    .next-steps-box {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 14px;
+      color: #e5f5ff;
+      white-space: pre-line; /* Zeilenumbrüche aus nextSteps anzeigen */
+      display: none;
+    }
+
     footer {
       text-align: center;
       font-size: 13px;
@@ -351,7 +380,6 @@
     <div id="result"></div>
   </div>
 
-  <!-- FOOTER -->
   <footer>
     <a href="impressum.html">Impressum</a>
     <a href="datenschutz.html">Datenschutz</a>
@@ -378,7 +406,7 @@
 
     if (mode === "business") {
       modeText.textContent =
-        "Schreiben Sie Ihre Geschäftsidee hinein – die KI bewertet Potenzial, Marktchancen und Risiken.";
+        "Schreiben Sie Ihre Geschäftsidee hinein – die KI bewertet Potenzial, Marktchancen und Risiken und kann Ihnen nächste Schritte aufzeigen.";
       textarea.placeholder = "Ihre Geschäftsidee...";
     } else {
       modeText.textContent =
@@ -402,6 +430,12 @@
         metric.classList.toggle("open");
       });
     });
+  }
+
+  function toggleNextSteps() {
+    const box = document.getElementById("next-steps-box");
+    if (!box) return;
+    box.style.display = box.style.display === "none" || box.style.display === "" ? "block" : "none";
   }
 
   async function bewerten() {
@@ -460,6 +494,8 @@
     const scalabilityPercent = Math.max(0, Math.min(100, (r.scalability / 10) * 100));
     const capitalPercent = Math.max(0, Math.min(100, (r.capital / 10) * 100));
 
+    const nextStepsText = r.nextSteps || "";
+
     resultBox.innerHTML = `
       <div class="score-box">
         <div class="total-score">
@@ -515,6 +551,18 @@
           <div class="summary-title">Fazit</div>
           <div class="summary-text">${r.summary}</div>
         </div>
+
+        ${nextStepsText
+          ? `
+          <button type="button" class="next-steps-btn" onclick="toggleNextSteps()">
+            Wie geht's weiter mit der Idee?
+          </button>
+          <div id="next-steps-box" class="next-steps-box">
+            ${nextStepsText}
+          </div>
+          `
+          : ""
+        }
       </div>
     `;
 
@@ -598,4 +646,3 @@
 
 </body>
 </html>
-
