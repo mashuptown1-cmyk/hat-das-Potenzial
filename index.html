@@ -40,7 +40,7 @@
       font-size: 42px;
       font-weight: 800;
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
       background: linear-gradient(90deg, #68d6ff, #9f6afd);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -49,7 +49,7 @@
     p {
       text-align: center;
       color: #d0d0d0;
-      margin-bottom: 18px;
+      margin-bottom: 25px;
       font-size: 17px;
     }
 
@@ -109,7 +109,35 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* --- Score / Graph Styles --- */
+    .mode-switch {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      margin-top: 10px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(90deg, #68d6ff, #9f6afd);
+      color: #050608;
+      box-shadow: 0 0 15px rgba(150,150,255,0.6);
+      border-color: transparent;
+    }
+
+    .mode-btn:hover {
+      transform: scale(1.02);
+    }
 
     .score-box {
       display: flex;
@@ -223,38 +251,6 @@
       line-height: 1.5;
     }
 
-    /* Mode Switch Styles */
-    .mode-switch {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-      margin-top: 10px;
-    }
-
-    .mode-btn {
-      flex: 1;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(0,0,0,0.5);
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-      transition: 0.25s;
-      white-space: nowrap;
-    }
-
-    .mode-btn.active {
-      background: linear-gradient(90deg, #68d6ff, #9f6afd);
-      color: #050608;
-      box-shadow: 0 0 15px rgba(150,150,255,0.6);
-      border-color: transparent;
-    }
-
-    .mode-btn:hover {
-      transform: scale(1.02);
-    }
-
     @media (max-width: 600px) {
       .container {
         padding: 24px 18px;
@@ -265,16 +261,14 @@
       .metrics-grid {
         grid-template-columns: 1fr;
       }
-      .mode-switch {
-        flex-direction: column;
-      }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Hat das Potenzial?</h1>
-    <p id="mode-text">Schreib deine Geschäftsidee rein – die KI checkt Markt & Potenzial.</p>
+    <p id="mode-text">Schreiben Sie Ihren Text hinein und lassen Sie ihn KI-gestützt bewerten.</p>
 
     <div class="mode-switch">
       <button class="mode-btn active" data-mode="business" onclick="setMode('business')">
@@ -285,14 +279,48 @@
       </button>
     </div>
 
-    <textarea id="idee" placeholder="Deine Geschäftsidee hier eingeben..."></textarea>
+    <textarea id="idee" placeholder="Ihre Geschäftsidee oder Ihr Anmachspruch..."></textarea>
     <button onclick="bewerten()">Bewerten</button>
 
     <div id="result"></div>
   </div>
 
+  <!-- FOOTER -->
+  <footer style="margin-top: 30px; text-align: center; font-size: 13px; color: #9da9b8;">
+    <a href="/impressum.html" style="color: #9da9b8; margin-right: 12px;">Impressum</a>
+    <a href="/datenschutz.html" style="color: #9da9b8; margin-right: 12px;">Datenschutz</a>
+    <a href="/agb.html" style="color: #9da9b8;">AGB</a>
+  </footer>
+
+
 <script>
   let currentMode = "business";
+
+  function setMode(mode) {
+    currentMode = mode;
+
+    const buttons = document.querySelectorAll(".mode-btn");
+    const modeText = document.getElementById("mode-text");
+    const textarea = document.getElementById("idee");
+
+    buttons.forEach(btn => {
+      if (btn.getAttribute("data-mode") === mode) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+
+    if (mode === "business") {
+      modeText.textContent =
+        "Schreiben Sie Ihre Geschäftsidee hinein – die KI bewertet Potenzial, Markt und Risiken.";
+      textarea.placeholder = "Ihre Geschäftsidee...";
+    } else {
+      modeText.textContent =
+        "Schreiben Sie Ihren Anmachspruch hinein – die KI bewertet Humor, Originalität und Erfolgschance.";
+      textarea.placeholder = "Ihr Anmachspruch...";
+    }
+  }
 
   function animateBars() {
     const bars = document.querySelectorAll(".bar-fill");
@@ -311,36 +339,12 @@
     });
   }
 
-  function setMode(mode) {
-    currentMode = mode;
-
-    const modeText = document.getElementById("mode-text");
-    const textarea = document.getElementById("idee");
-    const buttons = document.querySelectorAll(".mode-btn");
-
-    buttons.forEach(btn => {
-      if (btn.getAttribute("data-mode") === mode) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
-    });
-
-    if (mode === "business") {
-      modeText.textContent = "Schreib deine Geschäftsidee rein – die KI checkt Markt & Potenzial.";
-      textarea.placeholder = "Deine Geschäftsidee hier eingeben...";
-    } else {
-      modeText.textContent = "Schreib deinen Anmachspruch rein – die KI bewertet Humor, Cringe & Erfolgschance.";
-      textarea.placeholder = "Deinen Anmachspruch hier eingeben...";
-    }
-  }
-
   async function bewerten() {
     const text = document.getElementById("idee").value;
     const resultBox = document.getElementById("result");
 
     if (!text.trim()) {
-      resultBox.textContent = "Bitte zuerst etwas eingeben.";
+      resultBox.textContent = "Bitte geben Sie einen Text ein.";
       return;
     }
 
@@ -353,25 +357,23 @@
         body: JSON.stringify({ text: text, mode: currentMode })
       });
 
-      let data;
-      try {
-        data = await res.json();
-      } catch (err) {
-        resultBox.textContent = "❌ Fehler: Antwort des Servers war kein gültiges JSON.";
-        return;
-      }
+      const data = await res.json();
 
       if (data.result) {
         const r = data.result;
+        const modeFromServer = r.responseMode || currentMode;
 
-        if (currentMode === "pickup") {
+        if (
+          modeFromServer === "pickup" ||
+          (r.humor !== undefined && r.originality !== undefined)
+        ) {
           renderPickupResult(r);
         } else {
           renderBusinessResult(r);
         }
 
       } else if (data.error) {
-        resultBox.textContent = "❌ Fehler vom Server: " + data.error;
+        resultBox.textContent = "❌ Serverfehler: " + data.error;
       } else {
         resultBox.textContent = JSON.stringify(data, null, 2);
       }
@@ -410,45 +412,37 @@
           <div class="metric">
             <div class="metric-label">Marktgröße</div>
             <div class="metric-value">${r.market}/10</div>
-            <div class="bar" style="margin-top:6px;">
+            <div class="bar">
               <div class="bar-fill" data-target="${marketPercent}"></div>
             </div>
-            <div class="metric-reason">
-              ${r.marketReason || "Begründung nicht verfügbar."}
-            </div>
+            <div class="metric-reason">${r.marketReason}</div>
           </div>
 
           <div class="metric">
             <div class="metric-label">Konkurrenz</div>
             <div class="metric-value">${r.competition}/10</div>
-            <div class="bar" style="margin-top:6px;">
+            <div class="bar">
               <div class="bar-fill" data-target="${competitionPercent}"></div>
             </div>
-            <div class="metric-reason">
-              ${r.competitionReason || "Begründung nicht verfügbar."}
-            </div>
+            <div class="metric-reason">${r.competitionReason}</div>
           </div>
 
           <div class="metric">
             <div class="metric-label">Skalierbarkeit</div>
             <div class="metric-value">${r.scalability}/10</div>
-            <div class="bar" style="margin-top:6px;">
+            <div class="bar">
               <div class="bar-fill" data-target="${scalabilityPercent}"></div>
             </div>
-            <div class="metric-reason">
-              ${r.scalabilityReason || "Begründung nicht verfügbar."}
-            </div>
+            <div class="metric-reason">${r.scalabilityReason}</div>
           </div>
 
           <div class="metric">
             <div class="metric-label">Kapitalbedarf</div>
             <div class="metric-value">${r.capital}/10</div>
-            <div class="bar" style="margin-top:6px;">
+            <div class="bar">
               <div class="bar-fill" data-target="${capitalPercent}"></div>
             </div>
-            <div class="metric-reason">
-              ${r.capitalReason || "Begründung nicht verfügbar."}
-            </div>
+            <div class="metric-reason">${r.capitalReason}</div>
           </div>
         </div>
 
@@ -491,45 +485,37 @@
           <div class="metric">
             <div class="metric-label">Humor</div>
             <div class="metric-value">${r.humor}/10</div>
-            <div class="bar" style="margin-top:6px;">
+            <div class="bar">
               <div class="bar-fill" data-target="${humorPercent}"></div>
             </div>
-            <div class="metric-reason">
-              ${r.humorReason || "Begründung nicht verfügbar."}
-            </div>
+            <div class="metric-reason">${r.humorReason}</div>
           </div>
 
           <div class="metric">
             <div class="metric-label">Originalität</div>
             <div class="metric-value">${r.originality}/10</div>
-            <div class="bar" style="margin-top:6px;">
+            <div class="bar">
               <div class="bar-fill" data-target="${originalityPercent}"></div>
             </div>
-            <div class="metric-reason">
-              ${r.originalityReason || "Begründung nicht verfügbar."}
-            </div>
+            <div class="metric-reason">${r.originalityReason}</div>
           </div>
 
           <div class="metric">
             <div class="metric-label">Cringe-Faktor</div>
             <div class="metric-value">${r.cringe}/10</div>
-            <div class="bar" style="margin-top:6px;">
+            <div class="bar">
               <div class="bar-fill" data-target="${cringePercent}"></div>
             </div>
-            <div class="metric-reason">
-              ${r.cringeReason || "Begründung nicht verfügbar."}
-            </div>
+            <div class="metric-reason">${r.cringeReason}</div>
           </div>
 
           <div class="metric">
-            <div class="metric-label">Erfolgschance</div>
+            <div class="metric-label">Erfolgschance</div> 
             <div class="metric-value">${r.successChance}/10</div>
-            <div class="bar" style="margin-top:6px;">
+            <div class="bar">
               <div class="bar-fill" data-target="${successPercent}"></div>
             </div>
-            <div class="metric-reason">
-              ${r.successChanceReason || "Begründung nicht verfügbar."}
-            </div>
+            <div class="metric-reason">${r.successChanceReason}</div>
           </div>
         </div>
 
