@@ -6,17 +6,54 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const OPENAI_API_KEY = process.env.OPENAI_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_KEY; // env-Variable auf Render: OPENAI_KEY
 
 app.post("/bewerten", async (req, res) => {
-  const idee = req.body.text;
+  const { text: idee, mode } = req.body;
+  const selectedMode = mode === "pickup" ? "pickup" : "business";
+
+  if (!idee || typeof idee !== "string") {
+    return res.status(400).json({ error: "Kein Text übergeben." });
+  }
 
   try {
-    const response = await axios.post(
-      "https://api.openai.com/v1/responses",
-      {
-        model: "gpt-4.1-mini",
-        input: `
+    // Prompt je nach Modus
+    let prompt;
+
+    if (selectedMode === "pickup") {
+      // 🥂 Modus: Anmachsprüche
+      prompt = `
+Antworte nur mit gültigem JSON. Kein Kommentar, keine Erklärung, kein Text davor oder danach.
+
+Erzeuge ein JSON in exakt diesem Format:
+
+{
+  "humor": 0,
+  "humorReason": "Text",
+  "originality": 0,
+  "originalityReason": "Text",
+  "cringe": 0,
+  "cringeReason": "Text",
+  "successChance": 0,
+  "successChanceReason": "Text",
+  "totalScore": 0,
+  "summary": "Text"
+}
+
+Bedeutung:
+- Alle Zahlen sind ganze Zahlen zwischen 0 und 10.
+- "totalScore" ist die Summe von humor + originality + cringe + successChance (also 0–40).
+- "summary" ist ein kurzes Fazit (1–3 Sätze, auf Deutsch).
+- In den *Reason*-Feldern kurz und knackig erklären, warum du den Wert vergeben hast (Deutsch).
+- "cringe" darf auch hoch sein, wenn der Spruch sehr unangenehm ist.
+- Nur den Anmachspruch bewerten, keine Moralpredigt.
+
+Anmachspruch:
+${idee}
+      `;
+    } else {
+      // 💼 Modus: Geschäftsidee (wie bisher)
+      prompt = `
 Antworte nur mit gültigem JSON. Kein Kommentar, keine Erklärung, kein Text davor oder danach.
 
 Erzeuge ein JSON in exakt diesem Format:
@@ -43,17 +80,34 @@ Bedeutung:
 
 Geschäftsidee:
 ${idee}
-        `
+      `;
+    }
+
+    const response = await axios.post(
+      "https://api.openai.com/v1/responses",
+      {
+        model: "gpt-4.1-mini",
+        input: prompt
       },
       {
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
         },
       }
     );
 
-    let raw = response.data.output[0].content[0].text || "";
-    raw = raw.trim();
+    const output = response.data?.output?.[0]?.content?.[0]?.text;
+
+    if (!output) {
+      console.error("Unerwartete OpenAI-Response:", response.data);
+      return res.status(500).json({
+        error: "Antwort der KI war leer oder im unerwarteten Format.",
+        raw: response.data
+      });
+    }
+
+    let raw = output.trim();
 
     // ```json und ``` entfernen
     let cleaned = raw
