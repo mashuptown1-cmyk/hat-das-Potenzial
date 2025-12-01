@@ -303,7 +303,7 @@
       border: 1px solid rgba(255,255,255,0.12);
       font-size: 14px;
       color: #e5f5ff;
-      white-space: pre-line; /* Zeilenumbrüche aus nextSteps anzeigen */
+      white-space: pre-line; /* Zeilenumbrüche anzeigen */
       display: none;
     }
 
@@ -494,7 +494,19 @@
     const scalabilityPercent = Math.max(0, Math.min(100, (r.scalability / 10) * 100));
     const capitalPercent = Math.max(0, Math.min(100, (r.capital / 10) * 100));
 
-    const nextStepsText = r.nextSteps || "";
+    const isLegal = r.isLegal !== false; // Standard: legal, außer explizit false
+    const nextStepsOriginal = r.nextSteps || "";
+
+    let nextStepsContent = "";
+    if (isLegal && nextStepsOriginal.trim()) {
+      // Plan anzeigen
+      nextStepsContent = nextStepsOriginal;
+    } else if (!isLegal) {
+      // Hinweis bei illegaler Idee
+      nextStepsContent =
+        "Für offensichtlich rechtswidrige oder nicht mit geltendem Recht vereinbare Geschäftsideen steht diese Funktion nicht zur Verfügung. " +
+        "Die nachfolgenden Schritte werden nur für legale Geschäftsideen angeboten.";
+    }
 
     resultBox.innerHTML = `
       <div class="score-box">
@@ -552,16 +564,17 @@
           <div class="summary-text">${r.summary}</div>
         </div>
 
-        ${nextStepsText
-          ? `
+        ${
+          nextStepsContent
+            ? `
           <button type="button" class="next-steps-btn" onclick="toggleNextSteps()">
             Wie geht's weiter mit der Idee?
           </button>
           <div id="next-steps-box" class="next-steps-box">
-            ${nextStepsText}
+            ${nextStepsContent}
           </div>
           `
-          : ""
+            : ""
         }
       </div>
     `;
