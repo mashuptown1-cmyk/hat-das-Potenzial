@@ -2,7 +2,14 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Hat das Potenzial?</title>
+  <title>Hat das Potenzial? – Geschäftsideen & Anmachsprüche per KI bewerten</title>
+
+  <!-- Wichtig für Mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO: Beschreibung & Keywords -->
+  <meta name="description" content="Kostenlos Geschäftsidee oder Anmachspruch von KI bewerten lassen. ‚Hat das Potenzial?‘ analysiert Marktchancen, Skalierbarkeit, Humor, Originalität und Erfolgschance in wenigen Sekunden.">
+  <meta name="keywords" content="Geschäftsidee bewerten, Startup Idee prüfen, KI Bewertung, Geschäftsidee Analyse, Anmachspruch bewerten, Pick-up Line testen, KI Tool, Potenzial Analyse">
 
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -20,8 +27,9 @@
       color: #ffffff;
       min-height: 100vh;
       display: flex;
-      justify-content: center;
-      padding: 40px 15px;
+      flex-direction: column;         /* ⚡ Container + Footer untereinander */
+      align-items: center;            /* zentriert */
+      padding: 40px 15px 20px;
     }
 
     .container {
@@ -34,23 +42,39 @@
       backdrop-filter: blur(18px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       animation: fadeIn 0.9s ease-out;
+      margin-bottom: 16px;           /* Abstand zum Footer */
     }
 
     h1 {
       font-size: 42px;
       font-weight: 800;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       background: linear-gradient(90deg, #68d6ff, #9f6afd);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    p {
+    .subtitle {
       text-align: center;
       color: #d0d0d0;
-      margin-bottom: 25px;
+      margin-bottom: 6px;
       font-size: 17px;
+    }
+
+    .seo-text {
+      text-align: center;
+      color: #aeb9cc;
+      margin-bottom: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    #mode-text {
+      text-align: center;
+      color: #d0d0d0;
+      margin-bottom: 15px;
+      font-size: 15px;
     }
 
     textarea {
@@ -114,6 +138,7 @@
       gap: 10px;
       margin-bottom: 15px;
       margin-top: 10px;
+      flex-wrap: wrap;
     }
 
     .mode-btn {
@@ -126,6 +151,8 @@
       font-size: 14px;
       cursor: pointer;
       transition: 0.25s;
+      text-align: center;
+      min-width: 140px;
     }
 
     .mode-btn.active {
@@ -251,15 +278,46 @@
       line-height: 1.5;
     }
 
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #9da9b8;
+    }
+
+    footer a {
+      color: #9da9b8;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
     @media (max-width: 600px) {
+      body {
+        padding: 20px 10px 15px;
+      }
       .container {
-        padding: 24px 18px;
+        padding: 22px 16px;
       }
       h1 {
-        font-size: 32px;
+        font-size: 30px;
+      }
+      .subtitle {
+        font-size: 15px;
+      }
+      .seo-text {
+        font-size: 13px;
       }
       .metrics-grid {
         grid-template-columns: 1fr;
+      }
+      .mode-switch {
+        flex-direction: column;
+      }
+      .mode-btn {
+        width: 100%;
       }
     }
   </style>
@@ -268,7 +326,15 @@
 <body>
   <div class="container">
     <h1>Hat das Potenzial?</h1>
-    <p id="mode-text">Schreiben Sie Ihren Text hinein und lassen Sie ihn KI-gestützt bewerten.</p>
+    <div class="subtitle">Geschäftsideen & Anmachsprüche mit KI bewerten lassen.</div>
+    <div class="seo-text">
+      Dieses Tool nutzt künstliche Intelligenz, um Geschäftsideen hinsichtlich Markt, Konkurrenz und Skalierbarkeit
+      sowie Anmachsprüche hinsichtlich Humor, Originalität und Erfolgschance zu analysieren.
+    </div>
+
+    <p id="mode-text">
+      Schreiben Sie Ihre Geschäftsidee hinein – die KI bewertet Potenzial, Marktchancen und Risiken.
+    </p>
 
     <div class="mode-switch">
       <button class="mode-btn active" data-mode="business" onclick="setMode('business')">
@@ -279,19 +345,18 @@
       </button>
     </div>
 
-    <textarea id="idee" placeholder="Ihre Geschäftsidee oder Ihr Anmachspruch..."></textarea>
+    <textarea id="idee" placeholder="Ihre Geschäftsidee..."></textarea>
     <button onclick="bewerten()">Bewerten</button>
 
     <div id="result"></div>
   </div>
 
   <!-- FOOTER -->
-  <footer style="margin-top: 30px; text-align: center; font-size: 13px; color: #9da9b8;">
-    <a href="/impressum.html" style="color: #9da9b8; margin-right: 12px;">Impressum</a>
-    <a href="/datenschutz.html" style="color: #9da9b8; margin-right: 12px;">Datenschutz</a>
-    <a href="/agb.html" style="color: #9da9b8;">AGB</a>
+  <footer>
+    <a href="/impressum.html">Impressum</a>
+    <a href="/datenschutz.html">Datenschutz</a>
+    <a href="/agb.html">AGB</a>
   </footer>
-
 
 <script>
   let currentMode = "business";
@@ -313,11 +378,11 @@
 
     if (mode === "business") {
       modeText.textContent =
-        "Schreiben Sie Ihre Geschäftsidee hinein – die KI bewertet Potenzial, Markt und Risiken.";
+        "Schreiben Sie Ihre Geschäftsidee hinein – die KI bewertet Potenzial, Marktchancen und Risiken.";
       textarea.placeholder = "Ihre Geschäftsidee...";
     } else {
       modeText.textContent =
-        "Schreiben Sie Ihren Anmachspruch hinein – die KI bewertet Humor, Originalität und Erfolgschance.";
+        "Schreiben Sie Ihren Anmachspruch hinein – die KI bewertet Humor, Originalität, Cringe-Faktor und Erfolgschance.";
       textarea.placeholder = "Ihr Anmachspruch...";
     }
   }
@@ -510,7 +575,7 @@
           </div>
 
           <div class="metric">
-            <div class="metric-label">Erfolgschance</div> 
+            <div class="metric-label">Erfolgschance</div>
             <div class="metric-value">${r.successChance}/10</div>
             <div class="bar">
               <div class="bar-fill" data-target="${successPercent}"></div>
