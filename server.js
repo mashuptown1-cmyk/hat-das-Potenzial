@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Achtung: In Render muss die Variable "OPENAI_KEY" gesetzt sein
+// Render-Env: OPENAI_KEY muss gesetzt sein
 const OPENAI_API_KEY = process.env.OPENAI_KEY;
 
 if (!OPENAI_API_KEY) {
@@ -14,17 +14,13 @@ if (!OPENAI_API_KEY) {
 }
 
 app.post("/bewerten", async (req, res) => {
-  // Body auslesen
   const { text: idee, mode } = req.body || {};
 
-  // Debug-Logs (in Render-Logs sichtbar)
   console.log("🔍 Request-Body:", req.body);
 
-  // Modus festlegen: "pickup" (Anmachspruch) oder Standard "business"
   const selectedMode = mode === "pickup" ? "pickup" : "business";
   console.log("✅ Verwendeter Modus im Backend:", selectedMode);
 
-  // Eingabe prüfen
   if (!idee || typeof idee !== "string" || !idee.trim()) {
     return res.status(400).json({ error: "Kein Text übergeben." });
   }
@@ -65,7 +61,7 @@ Anmachspruch:
 ${idee}
       `;
     } else {
-      // 💼 Modus: Geschäftsidee
+      // 💼 Modus: Geschäftsidee – mit nextSteps & Legal-Check
       prompt = `
 Antworte nur mit gültigem JSON. Kein Kommentar, keine Erklärung, kein Text davor oder danach.
 
@@ -81,7 +77,10 @@ Erzeuge ein JSON in exakt diesem Format:
   "capital": 0,
   "capitalReason": "Text",
   "totalScore": 0,
-  "summary": "Text"
+  "summary": "Text",
+  "nextSteps": "Text",
+  "isLegal": true,
+  "legalityReason": "Text"
 }
 
 Bedeutung:
@@ -90,6 +89,16 @@ Bedeutung:
 - "summary" ist ein kurzes Fazit (1–3 Sätze, auf Deutsch).
 - In den *Reason*-Feldern kurz und knackig erklären, warum du den Wert vergeben hast (Deutsch).
 - Risiko soll nur in den Begründungen / im summary berücksichtigt werden, aber keinen eigenen Zahlenwert bekommen.
+- "isLegal" gibt an, ob die Geschäftsidee nach heutigem Verständnis grundsätzlich im Rahmen der in Deutschland üblichen Gesetze umsetzbar ist (true = legal, false = offensichtlich rechtswidrig oder stark problematisch, z.B. Drogenhandel, Waffenverkauf ohne Erlaubnis, Betrug, Scams, Steuerhinterziehung, Ausbeutung).
+- "legalityReason" kurz begründen, warum du die Idee als legal oder nicht legal einstufst.
+- Wenn "isLegal" = true:
+  - "nextSteps" ist eine Schritt-für-Schritt-Anleitung (5–10 konkrete Schritte), wie man in Deutschland mit dieser Geschäftsidee starten kann, inkl. typischer Genehmigungen, Anmeldungen oder Behörden, wo relevant.
+  - "nextSteps" soll als Fließtext mit Zeilenumbrüchen geschrieben sein (z. B. "1. ...\\n2. ...\\n3. ...").
+  - Hinweis einbauen, dass es sich nur um eine unverbindliche Orientierung handelt und keine Rechts- oder Steuerberatung ersetzt.
+- Wenn "isLegal" = false:
+  - KEINE konkrete Schritt-für-Schritt-Anleitung geben.
+  - KEINE praktischen Tipps zur Umsetzung geben.
+  - "nextSteps" soll in diesem Fall nur allgemein darauf hinweisen, dass die Idee in dieser Form nicht unterstützt werden kann und die Funktion nur für legale Geschäftsideen gedacht ist.
 - Nutze GENAU die Feldnamen wie oben, keine zusätzlichen Felder.
 
 Geschäftsidee:
@@ -97,7 +106,6 @@ ${idee}
       `;
     }
 
-    // Anfrage an OpenAI Responses API
     const response = await axios.post(
       "https://api.openai.com/v1/responses",
       {
@@ -112,7 +120,6 @@ ${idee}
       }
     );
 
-    // Text aus der OpenAI-Response holen
     const output = response.data?.output?.[0]?.content?.[0]?.text;
 
     if (!output) {
@@ -125,13 +132,11 @@ ${idee}
 
     let raw = output.trim();
 
-    // ```json ... ``` entfernen, falls das Modell es doch einbaut
     let cleaned = raw
       .replace(/```json/gi, "")
       .replace(/```/g, "")
       .trim();
 
-    // Nur den Bereich zwischen erstem { und letztem }
     const firstBrace = cleaned.indexOf("{");
     const lastBrace = cleaned.lastIndexOf("}");
 
@@ -156,7 +161,6 @@ ${idee}
       });
     }
 
-    // Modus mit zurückschicken, damit das Frontend sicher weiß, was für Daten es sind
     parsed.responseMode = selectedMode;
 
     return res.json({ result: parsed });
