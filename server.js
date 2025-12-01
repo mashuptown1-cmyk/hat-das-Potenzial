@@ -6,22 +6,34 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const OPENAI_API_KEY = process.env.OPENAI_KEY; // env-Variable auf Render: OPENAI_KEY
+// Achtung: In Render muss die Variable "OPENAI_KEY" gesetzt sein
+const OPENAI_API_KEY = process.env.OPENAI_KEY;
+
+if (!OPENAI_API_KEY) {
+  console.warn("⚠️ Kein OPENAI_KEY in den Umgebungsvariablen gesetzt!");
+}
 
 app.post("/bewerten", async (req, res) => {
-  const { text: idee, mode } = req.body;
-  const selectedMode = mode === "pickup" ? "pickup" : "business";
+  // Body auslesen
+  const { text: idee, mode } = req.body || {};
 
-  if (!idee || typeof idee !== "string") {
+  // Debug-Logs (in Render-Logs sichtbar)
+  console.log("🔍 Request-Body:", req.body);
+
+  // Modus festlegen: "pickup" (Anmachspruch) oder Standard "business"
+  const selectedMode = mode === "pickup" ? "pickup" : "business";
+  console.log("✅ Verwendeter Modus im Backend:", selectedMode);
+
+  // Eingabe prüfen
+  if (!idee || typeof idee !== "string" || !idee.trim()) {
     return res.status(400).json({ error: "Kein Text übergeben." });
   }
 
   try {
-    // Prompt je nach Modus
     let prompt;
 
     if (selectedMode === "pickup") {
-      // 🥂 Modus: Anmachsprüche
+      // 🥂 Modus: Anmachspruch
       prompt = `
 Antworte nur mit gültigem JSON. Kein Kommentar, keine Erklärung, kein Text davor oder danach.
 
@@ -47,12 +59,13 @@ Bedeutung:
 - In den *Reason*-Feldern kurz und knackig erklären, warum du den Wert vergeben hast (Deutsch).
 - "cringe" darf auch hoch sein, wenn der Spruch sehr unangenehm ist.
 - Nur den Anmachspruch bewerten, keine Moralpredigt.
+- Nutze GENAU die Feldnamen wie oben, keine zusätzlichen Felder.
 
 Anmachspruch:
 ${idee}
       `;
     } else {
-      // 💼 Modus: Geschäftsidee (wie bisher)
+      // 💼 Modus: Geschäftsidee
       prompt = `
 Antworte nur mit gültigem JSON. Kein Kommentar, keine Erklärung, kein Text davor oder danach.
 
@@ -76,13 +89,15 @@ Bedeutung:
 - "totalScore" ist die Summe von market + competition + scalability + capital (also 0–40).
 - "summary" ist ein kurzes Fazit (1–3 Sätze, auf Deutsch).
 - In den *Reason*-Feldern kurz und knackig erklären, warum du den Wert vergeben hast (Deutsch).
-- Risiko soll nur in den Begründungen / im summary berücksichtigt werden, aber **keinen eigenen Zahlenwert bekommen**.
+- Risiko soll nur in den Begründungen / im summary berücksichtigt werden, aber keinen eigenen Zahlenwert bekommen.
+- Nutze GENAU die Feldnamen wie oben, keine zusätzlichen Felder.
 
 Geschäftsidee:
 ${idee}
       `;
     }
 
+    // Anfrage an OpenAI Responses API
     const response = await axios.post(
       "https://api.openai.com/v1/responses",
       {
@@ -97,6 +112,7 @@ ${idee}
       }
     );
 
+    // Text aus der OpenAI-Response holen
     const output = response.data?.output?.[0]?.content?.[0]?.text;
 
     if (!output) {
@@ -109,13 +125,13 @@ ${idee}
 
     let raw = output.trim();
 
-    // ```json und ``` entfernen
+    // ```json ... ``` entfernen, falls das Modell es doch einbaut
     let cleaned = raw
       .replace(/```json/gi, "")
       .replace(/```/g, "")
       .trim();
 
-    // Nur den Teil zwischen erstem { und letztem } nehmen
+    // Nur den Bereich zwischen erstem { und letztem }
     const firstBrace = cleaned.indexOf("{");
     const lastBrace = cleaned.lastIndexOf("}");
 
@@ -139,6 +155,9 @@ ${idee}
         raw: jsonString
       });
     }
+
+    // Modus mit zurückschicken, damit das Frontend sicher weiß, was für Daten es sind
+    parsed.responseMode = selectedMode;
 
     return res.json({ result: parsed });
 
