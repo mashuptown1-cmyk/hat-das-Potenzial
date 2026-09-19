@@ -1,194 +1,336 @@
+Klar – ersetze den gesamten Inhalt deiner **`index.html`** durch diesen Code. Die API-Verknüpfung und Bewertungsfunktionen bleiben erhalten:
+
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
+
   <title>Hat das Potenzial? – Geschäftsideen & Anmachsprüche per KI bewerten</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="Kostenlos Geschäftsidee oder Anmachspruch von KI bewerten lassen. ‚Hat das Potenzial?‘ analysiert Marktchancen, Skalierbarkeit, Humor, Originalität und Erfolgschance in wenigen Sekunden.">
-  <meta name="keywords" content="Geschäftsidee bewerten, Startup Idee prüfen, KI Bewertung, Geschäftsidee Analyse, Anmachspruch bewerten, Pick-up Line testen, KI Tool, Potenzial Analyse">
+  <meta
+    name="description"
+    content="Kostenlos Geschäftsidee oder Anmachspruch von KI bewerten lassen. ‚Hat das Potenzial?‘ analysiert Marktchancen, Skalierbarkeit, Humor, Originalität und Erfolgschance in wenigen Sekunden."
+  >
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <meta
+    name="keywords"
+    content="Geschäftsidee bewerten, Startup Idee prüfen, KI Bewertung, Geschäftsidee Analyse, Anmachspruch bewerten, Pick-up Line testen, KI Tool, Potenzial Analyse"
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap"
+    rel="stylesheet"
+  >
 
   <style>
+    :root {
+      --paper: #f5f5ef;
+      --ink: #172b2b;
+      --muted: #62706b;
+      --line: #d8dfd5;
+      --accent: #dcf58b;
+      --white: #fff;
+      --green: #345d4c;
+    }
+
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      font-family: "Inter", sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      background: radial-gradient(circle at top, #10131a, #050608);
-      color: #ffffff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 15px 20px;
+      font-family: Inter, Arial, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
     }
 
-    .container {
-      width: 100%;
-      max-width: 820px;
-      padding: 35px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      animation: fadeIn 0.9s ease-out;
-      margin-bottom: 16px;
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    button,
+    a,
+    textarea {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--green);
+      outline-offset: 5px;
+    }
+
+    /* HEADER */
+
+    .topbar {
+      max-width: 1440px;
+      margin: auto;
+      padding: 26px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      gap: 24px;
+    }
+
+    .brand {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.05;
+    }
+
+    .brand span {
+      display: block;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 7px;
+    }
+
+    .topbar nav {
+      display: flex;
+      gap: 32px;
+      font-size: 13px;
+    }
+
+    .nav-cta {
+      border: 1px solid var(--ink);
+      padding: 12px 19px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* HERO */
+
+    .hero {
+      max-width: 1440px;
+      margin: auto;
+      padding: 78px 6% 72px;
+      display: grid;
+      grid-template-columns: 1.12fr 1fr;
+      gap: 7%;
+      align-items: center;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 2px;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      flex-shrink: 0;
     }
 
     h1 {
-      font-size: 42px;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 10px;
-      background: linear-gradient(90deg, #68d6ff, #9f6afd);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: clamp(54px, 6.6vw, 94px);
+      line-height: .99;
+      letter-spacing: -.065em;
+      font-weight: 600;
+      margin: 25px 0;
+    }
+
+    h1 span {
+      color: var(--green);
     }
 
     .subtitle {
-      text-align: center;
-      color: #d0d0d0;
-      margin-bottom: 6px;
       font-size: 17px;
+      line-height: 1.7;
+      max-width: 390px;
+      color: var(--muted);
     }
 
-    .seo-text {
-      text-align: center;
-      color: #aeb9cc;
-      margin-bottom: 18px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    #mode-text {
-      text-align: center;
-      color: #d0d0d0;
-      margin-bottom: 15px;
-      font-size: 15px;
-    }
-
-    textarea {
-      width: 100%;
-      height: 180px;
-      border-radius: 14px;
-      padding: 18px;
-      font-size: 16px;
-      border: none;
-      outline: none;
-      resize: none;
-      background: rgba(255, 255, 255, 0.07);
-      color: #fff;
-      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.4);
-      transition: 0.25s;
-    }
-
-    textarea:focus {
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 12px #68d6ff;
-    }
-
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 16px;
-      font-size: 18px;
-      font-weight: 600;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(90deg, #68d6ff, #9f6afd);
-      color: #050608;
-      transition: 0.3s;
-      box-shadow: 0 0 18px rgba(100, 100, 255, 0.3);
-    }
-
-    button:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 25px rgba(150, 150, 255, 0.6);
-    }
-
-    #result {
-      margin-top: 28px;
-      padding: 20px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: inset 0 0 25px rgba(0,0,0,0.5);
-      font-size: 16px;
-      color: #dff7ff;
-      min-height: 40px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Ladeanimation */
-    .loading-wrap {
+    .hero-note {
+      border-top: 1px solid var(--line);
+      margin-top: 34px;
+      padding-top: 17px;
       display: flex;
-      flex-direction: column;
+      gap: 20px;
       align-items: center;
-      gap: 10px;
-      padding: 10px 0;
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--muted);
     }
 
-    .loader {
-      border: 3px solid rgba(255, 255, 255, 0.1);
-      border-top: 3px solid #68d6ff;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      animation: spin 0.8s linear infinite;
+    .hero-note strong {
+      font-size: 27px;
+      font-weight: 400;
+      color: var(--ink);
+      letter-spacing: -1px;
     }
 
-    .loading-text {
-      font-size: 14px;
-      color: #cfe6ff;
+    /* EINGABEKARTE */
+
+    .container {
+      min-width: 0;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 16px 45px #263b2810;
+      scroll-margin-top: 24px;
     }
 
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .card-top h2 {
+      font-size: 19px;
+      letter-spacing: -.6px;
+      font-weight: 600;
+    }
+
+    .card-top span {
+      font-size: 9px;
+      letter-spacing: 1.3px;
+      color: var(--muted);
     }
 
     .mode-switch {
       display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-      margin-top: 10px;
-      flex-wrap: wrap;
+      gap: 5px;
+      padding: 5px;
+      background: #f0f2eb;
+      border-radius: 7px;
+      margin-bottom: 20px;
     }
 
     .mode-btn {
       flex: 1;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(0,0,0,0.5);
-      color: #fff;
-      font-size: 14px;
+      border: 0;
+      padding: 12px 5px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.25s;
-      text-align: center;
-      min-width: 140px;
+      border-radius: 5px;
+      transition: background .2s, color .2s;
     }
 
     .mode-btn.active {
-      background: linear-gradient(90deg, #68d6ff, #9f6afd);
-      color: #050608;
-      box-shadow: 0 0 15px rgba(150,150,255,0.6);
-      border-color: transparent;
+      background: var(--ink);
+      color: white;
+      box-shadow: 0 3px 8px #14272512;
     }
 
     .mode-btn:hover {
-      transform: scale(1.02);
+      background: #e1e7da;
+      color: var(--ink);
+    }
+
+    .mode-btn.active:hover {
+      background: var(--green);
+      color: white;
+    }
+
+    #mode-text {
+      font-size: 12px;
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 14px;
+      min-height: 40px;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      height: 153px;
+      min-height: 120px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 17px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink);
+      background: #fbfcf9;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    textarea::placeholder {
+      color: #8b958e;
+    }
+
+    textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px #345d4c15;
+    }
+
+    .submit-btn {
+      margin-top: 13px;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      background: var(--accent);
+      color: var(--ink);
+      padding: 16px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+
+    .submit-btn:hover {
+      background: #cceb72;
+      transform: translateY(-1px);
+    }
+
+    .input-note {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 13px;
+      text-align: center;
+    }
+
+    /* ERGEBNISSE */
+
+    #result:empty {
+      display: none;
+    }
+
+    #result {
+      margin-top: 24px;
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+      line-height: 1.6;
+      font-size: 14px;
+      overflow-wrap: anywhere;
     }
 
     .score-box {
@@ -198,229 +340,629 @@
     }
 
     .total-score {
-      background: radial-gradient(circle at top left, #68d6ff22, #00000055);
-      padding: 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(104, 214, 255, 0.4);
+      background: var(--ink);
+      border-radius: 8px;
+      color: white;
+      padding: 22px;
     }
 
     .total-score-label {
-      font-size: 14px;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #a9dfff;
-      margin-bottom: 4px;
+      letter-spacing: 1.5px;
+      color: #c7d4c9;
     }
 
     .total-score-value {
-      font-size: 32px;
-      font-weight: 800;
       display: flex;
       align-items: baseline;
-      gap: 6px;
+      gap: 8px;
+      font-size: 46px;
+      font-weight: 600;
+      letter-spacing: -2px;
+      line-height: 1.5;
     }
 
-    .total-score-value span.small {
-      font-size: 16px;
+    .total-score-value .small {
+      font-size: 17px;
+      color: #bbcabd;
+      letter-spacing: 0;
       font-weight: 400;
-      color: #c4e9ff;
     }
 
     .bar {
-      width: 100%;
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
+      height: 6px;
+      border-radius: 9px;
+      background: #dde4d7;
       overflow: hidden;
-      margin-top: 10px;
+      margin-top: 12px;
+    }
+
+    .total-score .bar {
+      background: #ffffff25;
     }
 
     .bar-fill {
       height: 100%;
       width: 0;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #68d6ff, #9f6afd);
-      box-shadow: 0 0 14px rgba(159, 106, 253, 0.8);
-      transition: width 0.8s ease-out;
+      background: var(--green);
+      border-radius: 9px;
+      transition: width .8s ease-out;
+    }
+
+    .total-score .bar-fill {
+      background: var(--accent);
     }
 
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px 20px;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
 
     .metric {
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.06);
-      font-size: 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 14px;
+      background: #fafbf7;
       cursor: pointer;
-      transition: background 0.25s;
+      position: relative;
+    }
+
+    .metric::after {
+      content: "+";
+      position: absolute;
+      right: 11px;
+      top: 8px;
+      color: var(--muted);
+    }
+
+    .metric.open::after {
+      content: "−";
     }
 
     .metric:hover {
-      background: rgba(255,255,255,0.05);
+      background: #f0f4e9;
+    }
+
+    .metric-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-right: 10px;
+      color: var(--muted);
+    }
+
+    .metric-value {
+      font-size: 21px;
+      font-weight: 600;
+      margin-top: 5px;
     }
 
     .metric-reason {
-      margin-top: 8px;
-      font-size: 13px;
-      color: #cfe6ff;
-      line-height: 1.4;
       display: none;
+      font-size: 12px;
+      line-height: 1.7;
+      margin-top: 12px;
+      color: var(--muted);
     }
 
     .metric.open .metric-reason {
       display: block;
     }
 
-    .metric-label {
-      color: #b9cbe0;
-      margin-bottom: 4px;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    .metric-value {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
     .summary-title {
-      font-weight: 600;
-      margin-top: 6px;
-      margin-bottom: 4px;
       font-size: 15px;
-      color: #cde7ff;
+      font-weight: 600;
+      margin-bottom: 6px;
     }
 
     .summary-text {
-      font-size: 14px;
-      color: #e5f5ff;
-      line-height: 1.5;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--muted);
     }
 
     .next-steps-btn {
-      margin-top: 16px;
       width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 12px;
-      border: 1px solid rgba(104, 214, 255, 0.7);
+      border: 1px solid var(--ink);
+      border-radius: 5px;
       background: transparent;
-      color: #cde7ff;
+      padding: 14px;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.25s;
     }
 
     .next-steps-btn:hover {
-      background: rgba(104, 214, 255, 0.12);
-      transform: scale(1.01);
-      box-shadow: 0 0 12px rgba(104, 214, 255, 0.4);
+      background: var(--paper);
     }
 
     .next-steps-box {
-      margin-top: 10px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: rgba(0,0,0,0.55);
-      border: 1px solid rgba(255,255,255,0.12);
-      font-size: 14px;
-      color: #e5f5ff;
-      white-space: pre-line;
       display: none;
       opacity: 0;
-      transform: translateY(6px) scale(0.98);
-      transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      transform: translateY(6px);
+      transition: opacity .3s, transform .3s;
+      background: #f0f4e9;
+      border-radius: 6px;
+      padding: 18px;
+      font-size: 12px;
+      line-height: 1.8;
+      white-space: pre-line;
     }
 
     .next-steps-box.open {
       opacity: 1;
-      transform: translateY(0) scale(1);
-      box-shadow: 0 0 18px rgba(104, 214, 255, 0.35);
+      transform: translateY(0);
     }
+
+    /* LADEANIMATION */
+
+    .loading-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 15px;
+    }
+
+    .loader {
+      width: 23px;
+      height: 23px;
+      border: 2px solid var(--line);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    .loading-text {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ERKLÄRUNG */
+
+    .explainer {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 56px max(6%, calc((100vw - 1267px) / 2));
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 9%;
+      align-items: center;
+    }
+
+    .explainer .eyebrow {
+      color: #b9c8bc;
+    }
+
+    .explainer .eyebrow::before {
+      background: var(--accent);
+    }
+
+    .explainer h2 {
+      font-size: clamp(29px, 3.2vw, 44px);
+      line-height: 1.12;
+      font-weight: 400;
+      letter-spacing: -1.8px;
+      margin-top: 18px;
+    }
+
+    .explainer h2 span {
+      color: var(--accent);
+    }
+
+    .steps {
+      display: grid;
+      gap: 20px;
+    }
+
+    .step {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      font-size: 11px;
+      color: var(--accent);
+      padding-top: 4px;
+    }
+
+    .step h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .step p {
+      color: #b5c3b8;
+      font-size: 12px;
+      line-height: 1.7;
+      max-width: 340px;
+    }
+
+    .seo-text {
+      max-width: 1440px;
+      margin: auto;
+      padding: 27px 6%;
+      font-size: 11px;
+      line-height: 1.8;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* FOOTER */
 
     footer {
-      text-align: center;
-      font-size: 13px;
-      color: #9da9b8;
+      max-width: 1440px;
+      margin: auto;
+      padding: 24px 6%;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      font-size: 10px;
+      color: var(--muted);
     }
 
-    footer a {
-      color: #9da9b8;
-      text-decoration: none;
-      margin: 0 8px;
+    footer .footer-links {
+      display: flex;
+      gap: 22px;
     }
 
     footer a:hover {
       text-decoration: underline;
     }
 
-    @media (max-width: 600px) {
-      body {
-        padding: 20px 10px 15px;
+    /* GROSSE BILDSCHIRME */
+
+    @media (min-width: 1500px) {
+      .hero {
+        padding-top: 95px;
+        padding-bottom: 95px;
       }
+    }
+
+    /* TABLET */
+
+    @media (max-width: 900px) {
+      .hero {
+        gap: 5%;
+        padding: 52px 5%;
+      }
+
       .container {
-        padding: 22px 16px;
+        padding: 22px;
       }
+
       h1 {
-        font-size: 30px;
+        font-size: 59px;
       }
+
+      .topbar {
+        padding: 22px 5%;
+      }
+
+      .topbar nav {
+        gap: 18px;
+      }
+
+      .explainer {
+        padding: 44px 5%;
+        gap: 6%;
+      }
+    }
+
+    /* HANDY */
+
+    @media (max-width: 700px) {
+      .topbar {
+        padding: 17px 20px;
+      }
+
+      .brand {
+        font-size: 18px;
+      }
+
+      .brand span {
+        font-size: 8px;
+      }
+
+      .topbar nav {
+        display: none;
+      }
+
+      .nav-cta {
+        padding: 10px 12px;
+        font-size: 10px;
+      }
+
+      .hero {
+        display: block;
+        padding: 34px 20px 36px;
+      }
+
+      .eyebrow {
+        font-size: 8px;
+        letter-spacing: 1.5px;
+      }
+
+      h1 {
+        font-size: clamp(48px, 12vw, 70px);
+        margin: 18px 0;
+        line-height: 1;
+        max-width: 480px;
+      }
+
       .subtitle {
-        font-size: 15px;
+        font-size: 14px;
+        line-height: 1.65;
+        max-width: 400px;
       }
-      .seo-text {
-        font-size: 13px;
+
+      .hero-note {
+        display: none;
       }
-      .metrics-grid {
-        grid-template-columns: 1fr;
+
+      .container {
+        margin-top: 26px;
+        padding: 20px;
+        border-radius: 9px;
+        box-shadow: 0 8px 25px #263b2809;
       }
-      .mode-switch {
-        flex-direction: column;
+
+      .card-top {
+        margin-bottom: 17px;
       }
+
+      .card-top h2 {
+        font-size: 17px;
+      }
+
+      .card-top span {
+        font-size: 8px;
+      }
+
       .mode-btn {
-        width: 100%;
+        font-size: 11px;
+        padding: 12px 3px;
+      }
+
+      .mode-switch {
+        margin-bottom: 16px;
+      }
+
+      #mode-text {
+        min-height: 0;
+        font-size: 11px;
+      }
+
+      textarea {
+        font-size: 16px;
+        height: 132px;
+        padding: 13px;
+      }
+
+      .explainer {
+        display: block;
+        padding: 36px 24px;
+      }
+
+      .explainer h2 {
+        font-size: 33px;
+        letter-spacing: -1px;
+        margin-top: 14px;
+      }
+
+      .steps {
+        margin-top: 28px;
+        gap: 19px;
+      }
+
+      .seo-text {
+        padding: 22px 24px;
+      }
+
+      footer {
+        padding: 22px 24px;
+        flex-wrap: wrap;
+        font-size: 10px;
+      }
+
+      .metric {
+        padding: 12px;
+      }
+
+      .metric-label {
+        font-size: 8px;
+        letter-spacing: .5px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Hat das Potenzial?</h1>
-    <div class="subtitle">Geschäftsideen & Anmachsprüche mit KI bewerten lassen.</div>
-    <div class="seo-text">
-      Dieses Tool nutzt künstliche Intelligenz, um Geschäftsideen hinsichtlich Markt, Konkurrenz und Skalierbarkeit
-      sowie Anmachsprüche hinsichtlich Humor, Originalität und Erfolgschance zu analysieren.
-    </div>
 
-    <p id="mode-text">
-      Schreiben Sie Ihre Geschäftsidee hinein – die KI bewertet Potenzial, Marktchancen und Risiken.
+  <header class="topbar">
+    <a class="brand" href="#start">
+      Hat das Potenzial?
+      <span>Ideen verdienen Antworten.</span>
+    </a>
+
+    <nav aria-label="Hauptnavigation">
+      <a href="#analyse">Potenzial testen</a>
+      <a href="#prinzip">So funktioniert’s</a>
+    </nav>
+
+    <a class="nav-cta" href="#analyse">
+      Jetzt ausprobieren ↗
+    </a>
+  </header>
+
+  <main id="start">
+
+    <section class="hero">
+
+      <div class="hero-copy">
+        <p class="eyebrow">
+          Ein Gedanke. Viele Möglichkeiten.
+        </p>
+
+        <h1>
+          Hat das<br>
+          <span>Potenzial?</span>
+        </h1>
+
+        <p class="subtitle">
+          Die nächste Geschäftsidee. Der erste Satz.<br>
+          Finden Sie heraus, was darin steckt – mit einer Bewertung durch KI.
+        </p>
+
+        <div class="hero-note">
+          <strong>01—04</strong>
+          <span>
+            Vier Kriterien. Eine Einschätzung.<br>
+            Mehr Klarheit für Ihren nächsten Schritt.
+          </span>
+        </div>
+      </div>
+
+      <div class="container" id="analyse">
+
+        <div class="card-top">
+          <h2>Der Potenzial-Check</h2>
+          <span>MIT KI</span>
+        </div>
+
+        <div class="mode-switch">
+          <button
+            class="mode-btn active"
+            data-mode="business"
+            onclick="setMode('business')"
+          >
+            Geschäftsidee
+          </button>
+
+          <button
+            class="mode-btn"
+            data-mode="pickup"
+            onclick="setMode('pickup')"
+          >
+            Anmachspruch
+          </button>
+        </div>
+
+        <p id="mode-text">
+          Schreiben Sie Ihre Geschäftsidee hinein – die KI bewertet Potenzial,
+          Marktchancen und Risiken.
+        </p>
+
+        <textarea
+          id="idee"
+          aria-label="Text zur Bewertung"
+          placeholder="Ihre Geschäftsidee..."
+        ></textarea>
+
+        <button class="submit-btn" onclick="bewerten()">
+          <span>Potenzial bewerten</span>
+          <span aria-hidden="true">↗</span>
+        </button>
+
+        <p class="input-note">
+          Kostenlos ausprobieren · Vier Kriterien · Ein klares Fazit
+        </p>
+
+        <div id="result" aria-live="polite"></div>
+      </div>
+
+    </section>
+
+    <section class="explainer" id="prinzip">
+
+      <div>
+        <p class="eyebrow">
+          So wird aus Neugier Klarheit.
+        </p>
+
+        <h2>
+          Weniger Rätselraten.<br>
+          <span>Mehr Perspektive.</span>
+        </h2>
+      </div>
+
+      <div class="steps">
+
+        <div class="step">
+          <span class="step-number">01</span>
+          <div>
+            <h3>Gedanken festhalten.</h3>
+            <p>
+              Geschäftsidee oder Anmachspruch auswählen und Ihren Text eingeben.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="step-number">02</span>
+          <div>
+            <h3>Potenzial entdecken.</h3>
+            <p>
+              Die KI bewertet vier Kriterien und fasst ihre Einschätzung
+              für Sie zusammen.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="step-number">03</span>
+          <div>
+            <h3>Genauer hinsehen.</h3>
+            <p>
+              Bewertungsfelder anklicken, Begründungen lesen und bei
+              Geschäftsideen die verfügbaren nächsten Schritte entdecken.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <p class="seo-text">
+      Dieses Tool nutzt künstliche Intelligenz, um Geschäftsideen hinsichtlich
+      Markt, Konkurrenz und Skalierbarkeit sowie Anmachsprüche hinsichtlich
+      Humor, Originalität und Erfolgschance zu analysieren.
     </p>
 
-    <div class="mode-switch">
-      <button class="mode-btn active" data-mode="business" onclick="setMode('business')">
-        💼 Geschäftsidee bewerten
-      </button>
-      <button class="mode-btn" data-mode="pickup" onclick="setMode('pickup')">
-        💘 Anmachspruch bewerten
-      </button>
-    </div>
-
-    <textarea id="idee" placeholder="Ihre Geschäftsidee..."></textarea>
-    <button onclick="bewerten()">Bewerten</button>
-
-    <div id="result"></div>
-  </div>
+  </main>
 
   <footer>
-    <a href="impressum.html">Impressum</a>
-    <a href="datenschutz.html">Datenschutz</a>
-    <a href="agb.html">AGB</a>
+    <span>Hat das Potenzial? · Ideen verdienen Antworten.</span>
+
+    <div class="footer-links">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="agb.html">AGB</a>
+    </div>
   </footer>
 
 <script>
@@ -715,3 +1257,4 @@
 
 </body>
 </html>
+```
